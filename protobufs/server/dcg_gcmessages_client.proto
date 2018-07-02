@@ -1,0 +1,1115 @@
+import "dcg_gcmessages_common.proto";
+
+option optimize_for = SPEED;
+option cc_generic_services = false;
+
+enum EGCDCGClientMessages {
+	k_EMsgClientToGCStartMatchmaking = 9010;
+	k_EMsgClientToGCStartMatchmakingResponse = 9011;
+	k_EMsgClientToGCStopMatchmaking = 9012;
+	k_EMsgClientToGCStopMatchmakingResponse = 9013;
+	k_EMsgGCToClientMatchmakingStopped = 9014;
+	k_EMsgClientToGCLeaveLobby = 9015;
+	k_EMsgClientToGCLeaveLobbyResponse = 9016;
+	k_EMsgClientToGCDownloadReplay = 9017;
+	k_EMsgClientToGCDownloadReplayResponse = 9018;
+	k_EMsgClientToGCGetLeagueDetails = 9019;
+	k_EMsgClientToGCGetLeagueDetailsResponse = 9020;
+	k_EMsgClientToGCGetLeagueStandings = 9021;
+	k_EMsgClientToGCGetLeagueStandingsResponse = 9022;
+	k_EMsgClientToGCJoinChatChannel = 9023;
+	k_EMsgClientToGCJoinChatChannelResponse = 9024;
+	k_EMsgClientToGCSendChatMessage = 9025;
+	k_EMsgGCToClientChatMessage = 9026;
+	k_EMsgGCToClientUserJoinedChatChannel = 9027;
+	k_EMsgClientToGCLeaveChatChannel = 9028;
+	k_EMsgGCToClientChatChannelJoined = 9029;
+	k_EMsgClientToGCIsInMatchmaking = 9030;
+	k_EMsgClientToGCIsInMatchmakingResponse = 9031;
+	k_EMsgClientToGCDevRollLootList = 9032;
+	k_EMsgClientToGCDevRollLootListResponse = 9033;
+	k_EMsgGCToClientDevLobbyStatus = 9034;
+	k_EMsgGCToClientDevLobbyStatusResponse = 9035;
+	k_EMsgClientToGCRecycleCards = 9036;
+	k_EMsgClientToGCRecycleCardsResponse = 9037;
+	k_EMsgClientToGCLeaveChatChannelByKey = 9040;
+	k_EMsgClientToGCSendChatMessageRoll = 9041;
+	k_EMsgClientToGCSpectateUser = 9042;
+	k_EMsgClientToGCSpectateUserResponse = 9043;
+	k_EMsgClientToGCGetMatchHistory = 9044;
+	k_EMsgClientToGCGetMatchHistoryResponse = 9045;
+	k_EMsgClientToGCGetMatchDetails = 9046;
+	k_EMsgClientToGCGetMatchDetailsResponse = 9047;
+	k_EMsgClientToGCGetDeckRegistry = 9048;
+	k_EMsgClientToGCGetDeckRegistryResponse = 9049;
+	k_EMsgClientToGCUpdateDeckRegistry = 9050;
+	k_EMsgClientToGCUpdateDeckRegistryResponse = 9051;
+	k_EMsgClientToGCGetGauntletRankLeaderboard = 9052;
+	k_EMsgClientToGCGetGauntletRankLeaderboardResponse = 9053;
+	k_EMsgClientToGCRedeemCurrencyForItem = 9054;
+	k_EMsgClientToGCRedeemCurrencyForItemResponse = 9055;
+	k_EMsgClientToGCRedeemCurrencyForItemList = 9064;
+	k_EMsgClientToGCRedeemCurrencyForItemListResponse = 9065;
+	k_EMsgGCToClientMessageOfTheDay = 9066;
+	k_EMsgClientToGCSubmitUserFeedback = 9067;
+	k_EMsgClientToGCSubmitUserFeedbackResponse = 9068;
+	k_EMsgClientToGCPostMatchSurveyResponse = 9069;
+	k_EMsgClientToGCMatchResultScreenAnalytics = 9070;
+	k_EMsgClientToGCGetQuestMapStatus = 9071;
+	k_EMsgClientToGCGetQuestMapStatusResponse = 9072;
+	k_EMsgClientToGCClaimQuestMapNode = 9073;
+	k_EMsgClientToGCClaimQuestMapNodeResponse = 9074;
+	k_EMsgClientToGCQuestDevCommand = 9075;
+	k_EMsgClientToGCGetAIVsAIMatchConfig = 9076;
+	k_EMsgClientToGCGetAIVsAIMatchConfigResponse = 9077;
+	k_EMsgClientToGCGetAIVsAIMatchComplete = 9078;
+	k_EMsgClientToGCSetGlobalPhantomLeague = 9079;
+	k_EMsgClientToGCSetGlobalPhantomLeagueResponse = 9080;
+	k_EMsgGCToClientGlobalPhantomLeagues = 9081;
+	k_EMsgClientToGCOpenPhantomPack = 9082;
+	k_EMsgClientToGCOpenPhantomPackResponse = 9083;
+	k_EMsgGCToClientMarketPrices = 9084;
+	k_EMsgClientToGCAIMatchStarted = 9087;
+	k_EMsgClientToGCDeckBuilderStats = 9088;
+	k_EMsgGCToClientTournamentState = 9089;
+	k_EMsgClientToGCRegisterTournamentDeck = 9090;
+	k_EMsgClientToGCRegisterTournamentDeckResponse = 9091;
+	k_EMsgClientToGCMarketPrices = 9092;
+	k_EMsgClientToGCDebugReport = 9093;
+	k_EMsgClientToGCGetPackOpening = 9094;
+	k_EMsgClientToGCGetPackOpeningResponse = 9095;
+	k_EMsgGCToClientMatchmakingStatus = 9096;
+	k_EMsgClientToGCJoinGauntlet = 9097;
+	k_EMsgClientToGCJoinGauntletResponse = 9098;
+	k_EMsgClientToGCAbandonGauntlet = 9099;
+	k_EMsgClientToGCAbandonGauntletResponse = 9100;
+	k_EMsgGCToClientAvailableGauntlets = 9101;
+	k_EMsgClientToGCGauntletScoreboard = 9102;
+	k_EMsgClientToGCGauntletScoreboardResponse = 9103;
+	k_EMsgClientToGCRegisterGauntletDeck = 9104;
+	k_EMsgClientToGCRegisterGauntletDeckResponse = 9105;
+	k_EMsgClientToGCGauntletGrant = 9106;
+	k_EMsgClientToGCGauntletGrantResponse = 9107;
+	k_EMsgClientToGCGauntletGrantChoice = 9108;
+	k_EMsgClientToGCGauntletGrantChoiceResponse = 9109;
+	k_EMsgClientToGCPrivateLobbyCreate = 9110;
+	k_EMsgClientToGCPrivateLobbyCreateResponse = 9111;
+	k_EMsgClientToGCPrivateLobbyLeave = 9112;
+	k_EMsgClientToGCPrivateLobbyLeaveResponse = 9113;
+	k_EMsgClientToGCPrivateLobbyJoin = 9114;
+	k_EMsgClientToGCPrivateLobbyJoinResponse = 9115;
+	k_EMsgClientToGCPrivateLobbyAction = 9116;
+	k_EMsgClientToGCPrivateLobbyActionResponse = 9117;
+	k_EMsgClientToGCPrivateLobbyStartMatch = 9118;
+	k_EMsgClientToGCPrivateLobbyStartMatchResponse = 9119;
+	k_EMsgClientToGCPrivateLobbyInviteUser = 9120;
+	k_EMsgClientToGCPrivateLobbyInviteUserResponse = 9121;
+	k_EMsgClientToGCPrivateLobbyChallenge = 9122;
+	k_EMsgClientToGCPrivateLobbyChallengeResponse = 9123;
+	k_EMsgGCToClientPrivateLobbyEvent = 9124;
+	k_EMsgClientToGCPrivateLobbyClientVersion = 9125;
+	k_EMsgGCToClientSDRTicket = 9126;
+	k_EMsgClientToGCReplacementSDRTicket = 9127;
+	k_EMsgClientToGCReplacementSDRTicketResponse = 9128;
+}
+
+enum EChatRoomType {
+	k_EChatRoomType_Invalid = 0;
+	k_EChatRoomType_Match = 1;
+	k_EChatRoomType_PublicRegion = 2;
+	k_EChatRoomType_Developer = 3;
+	k_EChatRoomType_Custom = 4;
+	k_EChatRoomType_PrivateLobby = 5;
+	k_EChatRoomType_Client_Tab = 20;
+	k_EChatRoomType_Client_Whisper = 21;
+}
+
+enum EChatMessageAdditionalData {
+	k_EChatMessageAdditionalData_None = 0;
+	k_EChatMessageAdditionalData_DiceRoll = 1;
+}
+
+message CMsgClientToGCStartMatchmaking {
+	optional .CMsgStartFindingMatchInfo match_info = 2;
+}
+
+message CMsgClientToGCStartMatchmakingResponse {
+	enum EResultCode {
+		k_EResult_OK = 0;
+		k_EResult_AlreadyFindingMatch = 1;
+		k_EResult_PartyMemberInLobby = 2;
+		k_EResult_InvalidClientVersion = 3;
+		k_EResult_MatchmakingDisabled = 4;
+		k_EResult_MatchmakingTooBusy = 5;
+		k_EResult_LeagueClosed = 6;
+		k_EResult_InvalidLeague = 7;
+		k_EResult_InternalError = 8;
+		k_EResult_InvalidDeck = 9;
+		k_EResult_HasUnownedCards = 10;
+		k_EResult_TournamentNoMatches = 11;
+		k_EResult_TournamentWaitingOpponent = 12;
+		k_EResult_TournamentNoDeck = 13;
+	}
+
+	optional .CMsgClientToGCStartMatchmakingResponse.EResultCode result = 1 [default = k_EResult_OK];
+	optional uint32 tournament_opponent_id = 2;
+}
+
+message CMsgClientToGCStopMatchmaking {
+}
+
+message CMsgClientToGCStopMatchmakingResponse {
+	optional bool success = 1;
+}
+
+message CMsgGCToClientMatchmakingStopped {
+	enum EReason {
+		k_EResult_Unspecified = 0;
+		k_EResult_VersionUpdated = 1;
+		k_EResult_FailedReadyUp = 2;
+	}
+
+	optional .CMsgGCToClientMatchmakingStopped.EReason reason = 1 [default = k_EResult_Unspecified];
+}
+
+message CMsgClientToGCLeaveLobby {
+	optional uint64 lobby_id = 1;
+}
+
+message CMsgClientToGCLeaveLobbyResponse {
+}
+
+message CMsgClientToGCDownloadReplay {
+	enum EType {
+		k_EType_Client = 0;
+		k_EType_ServerCommand = 1;
+	}
+
+	optional uint64 match_id = 1;
+	optional .CMsgClientToGCDownloadReplay.EType replay_type = 2 [default = k_EType_Client];
+	optional uint32 require_version = 3;
+}
+
+message CMsgClientToGCDownloadReplayResponse {
+	optional bool success = 1;
+	optional bytes replay_data = 2;
+	optional uint32 version = 3;
+}
+
+message CMsgClientWelcomeDCG {
+	optional uint32 currency = 1;
+	repeated .CExtraMsgBlock extra_messages = 2;
+}
+
+message CMsgClientToGCGetLeagueDetails {
+	optional uint32 league_id = 1;
+}
+
+message CMsgClientToGCGetLeagueDetailsResponse {
+	message ScheduleEvent {
+		optional uint32 event_type = 1;
+		optional uint32 event_data = 2;
+		optional uint32 timestamp = 3;
+	}
+
+	optional uint32 league_id = 1;
+	optional string league_name = 2;
+	optional bool success = 3;
+	repeated .CMsgClientToGCGetLeagueDetailsResponse.ScheduleEvent schedule = 4;
+	optional uint32 card_type = 7;
+	optional uint32 league_type = 8;
+}
+
+message CMsgClientToGCGetLeagueStandings {
+	optional uint32 league_id = 1;
+}
+
+message CMsgClientToGCGetLeagueStandingsResponse {
+	message Score {
+		optional uint32 account_id = 1;
+		optional string profile_name = 2;
+		optional uint32 total_score = 3;
+		optional uint32 place = 4;
+	}
+
+	message Period {
+		message PeriodScore {
+			optional uint32 account_id = 1;
+			optional uint32 wins = 2;
+			optional uint32 losses = 3;
+			optional uint32 draws = 4;
+			optional uint32 score = 5;
+			optional uint32 place = 6;
+		}
+
+		optional uint32 period = 1;
+		repeated .CMsgClientToGCGetLeagueStandingsResponse.Period.PeriodScore scores = 2;
+		optional bool closed = 3;
+	}
+
+	optional bool success = 1;
+	repeated .CMsgClientToGCGetLeagueStandingsResponse.Score standings = 2;
+	repeated .CMsgClientToGCGetLeagueStandingsResponse.Period periods = 3;
+	optional uint32 min_games_to_score = 4;
+	optional uint32 score_buckets = 5;
+}
+
+message CMsgClientToGCJoinChatChannel {
+	optional .EChatRoomType room_type = 1 [default = k_EChatRoomType_Invalid];
+	optional uint64 room_key = 2;
+	optional uint32 sub_room_index = 3;
+	optional uint32 request_id = 4;
+}
+
+message CMsgClientToGCJoinChatChannelResponse {
+	enum EResult {
+		k_EResult_Success = 0;
+		k_EResult_InvalidRoom = 1;
+		k_EResult_PermissionDenied = 2;
+		k_EResult_InternalError = 3;
+		k_EResult_RoomOffline = 4;
+		k_EResult_AlreadyJoined = 5;
+		k_EResult_RateLimited = 6;
+		k_EResult_TooManyRooms = 7;
+		k_EResult_ChatBanned = 8;
+		k_EResult_AccountNotLinked = 9;
+	}
+
+	optional .CMsgClientToGCJoinChatChannelResponse.EResult result = 1 [default = k_EResult_Success];
+}
+
+message CMsgGCToClientChatChannelJoined {
+	optional bool success = 1;
+	optional uint32 request_id = 2;
+	optional fixed64 chat_room_id = 3;
+	optional uint32 sub_room_index = 4;
+	optional bool aliased_user_ids = 5;
+	optional uint32 local_aliased_id = 6;
+}
+
+message CMsgClientToGCSendChatMessage {
+	optional fixed64 chat_room_id = 1;
+	optional string chat_msg = 2;
+}
+
+message CMsgClientToGCSendChatMessageRoll {
+	optional fixed64 chat_room_id = 1;
+	optional uint32 roll_min = 2;
+	optional uint32 roll_max = 3;
+}
+
+message CChatMessageAdditionalData_DiceRoll {
+	optional uint32 roll_value = 1;
+	optional uint32 roll_min = 2;
+	optional uint32 roll_max = 3;
+}
+
+message CMsgGCToClientChatMessage {
+	optional fixed64 chat_room_id = 1;
+	optional uint32 user_id = 2;
+	optional string chat_msg = 3;
+	optional string persona_name = 4;
+	optional .CExtraMsgBlock additional_data = 5;
+	optional uint32 time_stamp = 6;
+}
+
+message CMsgGCToClientUserJoinedChatChannel {
+	optional fixed64 chat_room_id = 1;
+	repeated uint32 joined_user_ids = 2;
+	repeated string joined_persona_names = 3;
+	repeated uint32 left_user_ids = 4;
+}
+
+message CMsgClientToGCLeaveChatChannel {
+	optional fixed64 chat_room_id = 1;
+}
+
+message CMsgClientToGCLeaveChatChannelByKey {
+	optional .EChatRoomType room_type = 1 [default = k_EChatRoomType_Invalid];
+	optional uint64 room_key = 2;
+}
+
+message CMsgClientToGCIsInMatchmaking {
+}
+
+message CMsgClientToGCIsInMatchmakingResponse {
+	optional bool in_matchmaking = 1;
+}
+
+message CMsgClientToGCDevRollLootList {
+	optional string loot_list_name = 1;
+	optional uint32 item_def_index = 2;
+	optional uint32 num_rolls = 3;
+	optional uint32 random_seed = 4;
+}
+
+message CMsgClientToGCDevRollLootListResponse {
+	message RollResults {
+		optional uint32 roll_number = 1;
+		repeated uint32 def_indices = 2;
+	}
+
+	optional bool success = 1;
+	repeated .CMsgClientToGCDevRollLootListResponse.RollResults rolls = 2;
+	optional uint32 random_seed = 3;
+}
+
+message CMsgGCToClientDevLobbyStatus {
+	optional fixed64 lobby_id = 1;
+}
+
+message CMsgGCToClientDevLobbyStatusResponse {
+	optional bool valid_lobby = 1;
+	optional fixed64 lobby_id = 2;
+}
+
+message CMsgClientToGCRecycleCards {
+	repeated uint64 item_ids = 1;
+	optional uint32 expected_return = 2;
+}
+
+message CMsgClientToGCRecycleCardsResponse {
+	enum EResponse {
+		eResponse_Success = 0;
+		eResponse_InternalError = 1;
+		eResponse_SystemDisabled = 2;
+		eResponse_MismatchedRewards = 3;
+		eResponse_InvalidItems = 4;
+		eResponse_TooBusy = 5;
+		eResponse_TooManyItems = 6;
+	}
+
+	optional .CMsgClientToGCRecycleCardsResponse.EResponse response = 1 [default = eResponse_Success];
+	optional uint32 amount_earned = 3;
+}
+
+message CMsgClientToGCSpectateUser {
+	optional uint32 spectate_account_id = 1;
+}
+
+message CMsgClientToGCSpectateUserResponse {
+	enum EResult {
+		eResult_OK = 1;
+		eResult_NotInGame = 2;
+		eResult_InternalError = 3;
+	}
+
+	optional .CMsgClientToGCSpectateUserResponse.EResult result = 1 [default = eResult_OK];
+	optional uint64 match_id = 2;
+	optional fixed64 server_steam_id = 3;
+	optional bytes sdr_key = 4;
+	optional uint32 udp_connect_ip = 5;
+	optional uint32 udp_connect_port = 6;
+}
+
+message CMsgClientToGCGetMatchHistory {
+	optional uint32 account_id = 1;
+}
+
+message CMsgClientToGCGetMatchHistoryResponse {
+	message MatchDetails {
+		optional uint32 player1 = 1;
+		optional uint32 player2 = 2;
+		optional uint32 start_time = 3;
+		optional uint32 duration = 4;
+		optional uint32 turns = 5;
+		optional uint64 match_id = 6;
+		optional uint32 outcome = 7;
+		optional .EDCGMatchMode match_mode = 8 [default = k_EDCGMatchMode_NewUser];
+		repeated uint32 tower_health = 9;
+		repeated uint32 heroes = 10;
+	}
+
+	repeated .CMsgClientToGCGetMatchHistoryResponse.MatchDetails match_details = 1;
+}
+
+message CMsgClientToGCGetMatchDetails {
+	optional uint64 match_id = 1;
+}
+
+message CMsgClientToGCGetMatchDetailsResponse {
+	enum EResult {
+		eResult_Success = 0;
+		eResult_InvalidMatch = 1;
+		eResult_NotAuthorized = 2;
+		eResult_InternalError = 3;
+	}
+
+	optional uint32 player1 = 1;
+	optional uint32 player2 = 2;
+	optional uint32 start_time = 3;
+	optional uint32 duration = 4;
+	optional uint32 turns = 5;
+	optional uint64 match_id = 6;
+	optional uint32 outcome = 7;
+	optional .EDCGMatchMode match_mode = 8 [default = k_EDCGMatchMode_NewUser];
+	repeated uint32 tower_health1 = 9;
+	repeated uint32 tower_health2 = 10;
+	repeated uint32 heroes1 = 11;
+	repeated uint32 heroes2 = 12;
+	optional .CMsgClientToGCGetMatchDetailsResponse.EResult result = 13 [default = eResult_Success];
+}
+
+message CMsgClientToGCGetDeckRegistry {
+}
+
+message CMsgClientToGCGetDeckRegistryResponse {
+	message Deck {
+		optional string name = 1;
+		optional string tags = 2;
+		optional string code = 3;
+		optional uint32 version = 4;
+		optional string description = 5;
+		optional uint32 league_id = 6;
+	}
+
+	repeated .CMsgClientToGCGetDeckRegistryResponse.Deck deck_list = 1;
+}
+
+message CMsgClientToGCUpdateDeckRegistry {
+	optional string deck_name = 1;
+	optional string deck_tags = 2;
+	optional string deck_code = 3;
+	optional bool delete_deck = 4;
+}
+
+message CMsgClientToGCUpdateDeckRegistryResponse {
+	optional bool success = 1;
+}
+
+message CMsgClientToGCGetGauntletRankLeaderboard {
+	optional uint32 season_id = 1;
+}
+
+message CMsgClientToGCGetGauntletRankLeaderboardResponse {
+	message LeaderboardEntry {
+		optional uint32 account_id = 1;
+		optional uint32 rating = 2;
+	}
+
+	repeated .CMsgClientToGCGetGauntletRankLeaderboardResponse.LeaderboardEntry entry = 1;
+}
+
+message CMsgClientToGCRedeemCurrencyForItem {
+	optional uint32 redeem_for_def_index = 1;
+	optional uint32 use_currency_id = 2;
+	optional uint32 expected_cost = 3;
+}
+
+message CMsgClientToGCRedeemCurrencyForItemResponse {
+	enum EResult {
+		eResult_Success = 0;
+		eResult_SystemDisabled = 1;
+		eResult_IncorrectExpectedCost = 2;
+		eResult_InvalidItem = 3;
+		eResult_InternalError = 4;
+		eResult_InsufficientCurrency = 5;
+	}
+
+	optional .CMsgClientToGCRedeemCurrencyForItemResponse.EResult result = 1 [default = eResult_Success];
+	optional uint32 def_index = 2;
+}
+
+message CMsgClientToGCRedeemCurrencyForItemList {
+	message Currency {
+		optional uint32 currency_id = 1;
+		optional uint32 currency_cost = 2;
+	}
+
+	repeated uint32 redeem_for_def_index = 1;
+	repeated .CMsgClientToGCRedeemCurrencyForItemList.Currency expected_cost = 2;
+}
+
+message CMsgClientToGCRedeemCurrencyForItemListResponse {
+	enum EResult {
+		eResult_Success = 0;
+		eResult_SystemDisabled = 1;
+		eResult_IncorrectExpectedCost = 2;
+		eResult_InvalidItem = 3;
+		eResult_InternalError = 4;
+		eResult_InsufficientCurrency = 5;
+	}
+
+	optional .CMsgClientToGCRedeemCurrencyForItemListResponse.EResult result = 1 [default = eResult_Success];
+}
+
+message CMsgGCToClientMessageOfTheDay {
+	message CMsgEntry {
+		optional uint32 time_stamp = 1;
+		optional uint32 min_client_version = 2;
+		optional string msg_body = 3;
+	}
+
+	repeated .CMsgGCToClientMessageOfTheDay.CMsgEntry msg_list = 1;
+}
+
+message CMsgClientToGCSubmitUserFeedback {
+	enum EType {
+		eType_CriticalBug = 1;
+		eType_Bug = 2;
+		eType_Suggestion = 3;
+		eType_Other = 4;
+		eType_General = 5;
+	}
+
+	optional string message_text = 1;
+	optional .CMsgClientToGCSubmitUserFeedback.EType feedback_type = 2 [default = eType_CriticalBug];
+	optional string source_info = 3;
+	optional uint32 client_version = 4;
+}
+
+message CMsgClientToGCSubmitUserFeedbackResponse {
+	enum EResponse {
+		eResponse_Success = 0;
+		eResponse_InternalError = 1;
+		eResponse_InvalidMsg = 2;
+	}
+
+	optional .CMsgClientToGCSubmitUserFeedbackResponse.EResponse response = 1 [default = eResponse_Success];
+}
+
+message CMsgClientToGCPostMatchSurveyResponse {
+	optional uint64 match_id = 1;
+	optional uint32 question_id = 2;
+	optional uint32 response_value = 3;
+}
+
+message CMsgClientToGCMatchResultScreenAnalytics {
+	message GraphStats {
+		optional uint32 time_spent_s = 1;
+		optional uint32 graph_id = 2;
+		optional bool timeline_view = 3;
+		optional uint32 times_viewed = 4;
+	}
+
+	optional uint32 starting_graph = 1;
+	optional uint64 match_id = 2;
+	repeated .CMsgClientToGCMatchResultScreenAnalytics.GraphStats graph_stats = 3;
+}
+
+message CMsgClientToGCGetQuestMapStatus {
+	optional uint32 quest_id = 1;
+}
+
+message CMsgClientToGCGetQuestMapStatusResponse {
+	optional bool success = 1;
+	repeated uint32 unlocked_nodes = 2;
+}
+
+message CMsgClientToGCClaimQuestMapNode {
+	optional uint32 quest_id = 1;
+	optional uint32 node_id = 2;
+	optional bool deferred_node = 3;
+}
+
+message CMsgClientToGCClaimQuestMapNodeResponse {
+	message CurrencyGrant {
+		optional uint32 currency_id = 1;
+		optional uint32 amount = 2;
+	}
+
+	enum EResult {
+		eResult_Success = 0;
+		eResult_SystemDisabled = 1;
+		eResult_InternalError = 2;
+		eResult_InsufficientCurrency = 3;
+		eResult_NodeUnavailable = 4;
+		eResult_AlreadyUnlocked = 5;
+		eResult_NotDeferredNode = 6;
+		eResult_PriorNodesLocked = 7;
+	}
+
+	optional .CMsgClientToGCClaimQuestMapNodeResponse.EResult result = 1 [default = eResult_Success];
+	repeated uint32 granted_items = 2;
+	repeated .CMsgClientToGCClaimQuestMapNodeResponse.CurrencyGrant granted_currency = 3;
+	repeated uint32 unlocked_nodes = 4;
+}
+
+message CMsgClientToGCQuestDevCommand {
+	optional uint32 quest_id = 1;
+	optional bool reset_progress = 2;
+	optional int32 grant_currency = 3;
+}
+
+message CMsgClientToGCGetAIVsAIMatchConfig {
+}
+
+message CMsgClientToGCGetAIVsAIMatchConfigResponse {
+	optional bool success = 1;
+	optional uint32 ai_match_id = 2;
+	optional string ai_0_deck_code = 3;
+	optional string ai_1_deck_code = 4;
+}
+
+message CMsgClientToGCGetAIVsAIMatchComplete {
+	optional uint32 ai_match_id = 1;
+	optional uint32 winning_player = 2;
+}
+
+message CMsgClientToGCSetGlobalPhantomLeague {
+	optional uint32 phantom_league_id = 1;
+}
+
+message CMsgClientToGCSetGlobalPhantomLeagueResponse {
+	enum EResponse {
+		k_eSuccess = 1;
+		k_eTooManyRequests = 2;
+		k_eInternalError = 3;
+		k_eInvalidPhantomLeague = 4;
+		k_eDisabled = 5;
+		k_eAlreadyInLeague = 6;
+	}
+
+	optional .CMsgClientToGCSetGlobalPhantomLeagueResponse.EResponse response = 1 [default = k_eSuccess];
+}
+
+message CMsgGCToClientGlobalPhantomLeagues {
+	message PhantomLeagueItem {
+		optional uint32 def_index = 1;
+		optional uint32 quantity = 2;
+	}
+
+	message PhantomLeagueDeck {
+		optional bytes deck_code = 1;
+		optional string deck_name = 2;
+	}
+
+	message PhantomLeagueInfo {
+		optional bytes global_cards = 1;
+		optional uint32 time_available = 2;
+		optional uint32 time_ending = 3;
+		optional uint32 phantom_league_id = 4;
+		repeated .CMsgGCToClientGlobalPhantomLeagues.PhantomLeagueItem phantom_items = 5;
+		repeated .CMsgGCToClientGlobalPhantomLeagues.PhantomLeagueDeck decks = 6;
+	}
+
+	repeated .CMsgGCToClientGlobalPhantomLeagues.PhantomLeagueInfo global_phantom_leagues = 1;
+	optional uint32 active_phantom_league_id = 2;
+}
+
+message CMsgClientToGCOpenPhantomPack {
+	optional uint64 phantom_item_id = 1;
+}
+
+message CMsgClientToGCOpenPhantomPackResponse {
+	message OpenedItem {
+		optional uint32 def_index = 1;
+		optional uint64 phantom_item_id = 2;
+	}
+
+	enum EResponse {
+		k_eSuccess = 1;
+		k_eTooManyRequests = 2;
+		k_eInternalError = 3;
+		k_eInvalidItemID = 4;
+		k_eDisabled = 5;
+	}
+
+	optional .CMsgClientToGCOpenPhantomPackResponse.EResponse response = 1 [default = k_eSuccess];
+	repeated .CMsgClientToGCOpenPhantomPackResponse.OpenedItem items = 2;
+}
+
+message CMsgGCToClientMarketPrices {
+	optional uint32 time_stamp = 1;
+	optional uint32 currency_id = 2;
+	repeated uint32 def_indices = 3 [packed = true];
+	repeated uint64 purchase_price = 4 [packed = true];
+	repeated uint64 sell_price = 5 [packed = true];
+	optional bool request_up_to_date = 6;
+	optional uint32 valid_through = 7;
+}
+
+message CMsgClientToGCAIMatchStarted {
+	optional uint32 difficulty = 1;
+	optional uint32 start_time = 2;
+	optional bytes player_deck = 3;
+	optional bytes ai_deck = 4;
+}
+
+message CMsgClientToGCDeckBuilderStats {
+	optional uint32 time_spent_s = 1;
+}
+
+message CMsgGCToClientTournamentState {
+	message Series {
+		optional uint32 series_id = 1;
+		optional uint32 player1 = 2;
+		optional uint32 player2 = 3;
+		optional uint32 wins1 = 4;
+		optional uint32 wins2 = 5;
+		optional uint32 ties = 6;
+		optional bool completed = 7;
+		optional uint32 winner_id = 8;
+		optional uint32 available_at = 9;
+		repeated uint64 match_ids = 10;
+		optional uint32 phase_id = 11;
+		optional fixed64 active_lobby_id = 12;
+		optional uint32 winner_series_id = 13;
+		optional uint32 loser_series_id = 14;
+	}
+
+	message Deck {
+		optional uint32 account_id = 1;
+		optional string deck_code = 2;
+	}
+
+	enum EPhase {
+		kInactive = 0;
+		kDeckRegistration = 1;
+		kActive = 2;
+	}
+
+	optional uint32 tournament_id = 1;
+	repeated .CMsgGCToClientTournamentState.Series series = 2;
+	optional .CMsgGCToClientTournamentState.EPhase tournament_phase = 3 [default = kInactive];
+	repeated .CMsgGCToClientTournamentState.Deck registered_decks = 4;
+	optional bool is_open_registration = 5;
+	optional .CMsgDeckValdiationConfig deck_validator = 6;
+}
+
+message CMsgClientToGCRegisterTournamentDeck {
+	optional string deck_code = 1;
+}
+
+message CMsgClientToGCRegisterTournamentDeckResponse {
+	optional bool success = 1;
+}
+
+message CMsgClientToGCMarketPrices {
+	optional uint32 currency_id = 1;
+	optional uint32 prior_time_stamp = 2;
+}
+
+message CMsgClientToGCDebugReport {
+	message Event {
+		optional string event_name = 1;
+		optional uint32 event_count = 2;
+	}
+
+	optional uint32 build_version = 1;
+	repeated .CMsgClientToGCDebugReport.Event event_list = 2;
+}
+
+message CMsgClientToGCGetPackOpening {
+	optional uint64 pack_item_id = 1;
+}
+
+message CMsgClientToGCGetPackOpeningResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eInvalidItemID = 2;
+		k_eTooBusy = 3;
+		k_eRateLimited = 4;
+	}
+
+	optional .CMsgClientToGCGetPackOpeningResponse.EResponse result = 1 [default = k_eInternalError];
+	repeated uint32 card_def_indices = 2;
+}
+
+message CMsgGCToClientMatchmakingStatus {
+	message ModeStatus {
+		optional .EDCGMatchMode match_mode = 1 [default = k_EDCGMatchMode_NewUser];
+		optional uint32 queued_users = 2;
+	}
+
+	repeated .CMsgGCToClientMatchmakingStatus.ModeStatus modes = 2;
+}
+
+message CMsgClientToGCJoinGauntlet {
+	optional uint32 gauntlet_id = 1;
+	optional bytes deck_code = 2;
+}
+
+message CMsgClientToGCJoinGauntletResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eInvalidGauntlet = 2;
+		k_eTooBusy = 3;
+		k_eAlreadyInGauntlet = 4;
+		k_eInvalidDeck = 5;
+	}
+
+	optional .CMsgClientToGCJoinGauntletResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgClientToGCAbandonGauntlet {
+	optional uint32 gauntlet_id = 1;
+}
+
+message CMsgClientToGCAbandonGauntletResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eInvalidGauntlet = 2;
+		k_eTooBusy = 3;
+	}
+
+	optional .CMsgClientToGCAbandonGauntletResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgGCToClientAvailableGauntlets {
+	repeated .CMsgGauntletConfig available_gauntlets = 1;
+}
+
+message CMsgClientToGCGauntletScoreboard {
+	optional uint32 gauntlet_id = 1;
+}
+
+message CMsgClientToGCGauntletScoreboardResponse {
+	message User {
+		optional uint32 account_id = 1;
+		optional uint32 num_attempts = 2;
+		optional uint32 perfect_runs = 3;
+		optional uint32 trophy_points = 4;
+	}
+
+	optional uint32 gauntlet_id = 1;
+	repeated .CMsgClientToGCGauntletScoreboardResponse.User users = 2;
+}
+
+message CMsgClientToGCRegisterGauntletDeck {
+	optional uint32 gauntlet_id = 1;
+	optional bytes deck_bytes = 2;
+}
+
+message CMsgClientToGCRegisterGauntletDeckResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eInvalidGauntlet = 2;
+		k_eDeckAlreadyRegistered = 3;
+		k_eInvalidDeck = 4;
+	}
+
+	optional .CMsgClientToGCRegisterGauntletDeckResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgClientToGCGauntletGrant {
+	optional uint32 gauntlet_id = 1;
+	optional uint32 grant_id = 2;
+}
+
+message CMsgClientToGCGauntletGrantResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eInvalidGauntlet = 2;
+		k_eAlreadyGranted = 3;
+	}
+
+	optional .CMsgClientToGCGauntletGrantResponse.EResponse result = 1 [default = k_eInternalError];
+	optional uint32 choice_count = 2;
+	repeated uint32 def_index = 3;
+	repeated sint32 choice_cost = 4;
+	optional uint32 currency_balance = 5;
+}
+
+message CMsgClientToGCGauntletGrantChoice {
+	optional uint32 gauntlet_id = 1;
+	optional uint32 grant_id = 2;
+	repeated uint32 choice_def_index = 3;
+}
+
+message CMsgClientToGCGauntletGrantChoiceResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eInvalidGauntlet = 2;
+		k_eInvalidChoices = 3;
+		k_eAlreadyGranted = 4;
+	}
+
+	optional .CMsgClientToGCGauntletGrantChoiceResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgClientToGCPrivateLobbyCreate {
+	optional uint32 client_version = 1;
+}
+
+message CMsgClientToGCPrivateLobbyCreateResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eAlreadyInLobby = 2;
+		k_eDisabled = 3;
+		k_eInvalidVersion = 4;
+	}
+
+	optional .CMsgClientToGCPrivateLobbyCreateResponse.EResponse result = 1 [default = k_eInternalError];
+	optional fixed64 private_lobby_id = 2;
+}
+
+message CMsgClientToGCPrivateLobbyLeave {
+	optional fixed64 private_lobby_id = 1;
+}
+
+message CMsgClientToGCPrivateLobbyLeaveResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eNotInLobby = 2;
+		k_eInMatchMaking = 3;
+	}
+
+	optional .CMsgClientToGCPrivateLobbyLeaveResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgClientToGCPrivateLobbyJoin {
+	optional fixed64 private_lobby_id = 1;
+	optional uint32 client_version = 2;
+}
+
+message CMsgClientToGCPrivateLobbyJoinResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eAlreadyInLobby = 2;
+		k_eDisabled = 3;
+		k_eInvalidLobbyID = 4;
+		k_eInvalidPermissions = 5;
+		k_eInvalidVersion = 6;
+	}
+
+	optional .CMsgClientToGCPrivateLobbyJoinResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgClientToGCPrivateLobbyAction {
+	enum EAction {
+		k_eSetTeam = 0;
+		k_eSetDeck = 1;
+		k_eKickUser = 3;
+		k_eCancelInvite = 4;
+		k_eCancelFindMatch = 5;
+		k_eSetDecksVisible = 6;
+		k_eSetTimerMode = 7;
+		k_eShareDeck = 8;
+		k_eSetGameMode = 9;
+	}
+
+	optional fixed64 private_lobby_id = 1;
+	optional uint32 target_account_id = 2;
+	optional .CMsgClientToGCPrivateLobbyAction.EAction action_id = 3 [default = k_eSetTeam];
+	optional uint64 uint_value = 4;
+	optional bytes bytes_value = 5;
+	optional bool bool_value = 6;
+	optional sint64 sint_value = 7;
+	optional string str_value = 8;
+}
+
+message CMsgClientToGCPrivateLobbyActionResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eInvalidLobbyID = 2;
+		k_eInvalidPermissions = 3;
+		k_eInvalidTarget = 4;
+		k_eInvalidValue = 5;
+		k_eInMatchMaking = 6;
+		k_eInMatch = 7;
+	}
+
+	optional .CMsgClientToGCPrivateLobbyActionResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgClientToGCPrivateLobbyStartMatch {
+	optional fixed64 private_lobby_id = 1;
+}
+
+message CMsgClientToGCPrivateLobbyStartMatchResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eDisabled = 2;
+		k_eInvalidLobbyID = 3;
+		k_eInvalidPermissions = 4;
+		k_ePlayersMissingDeck = 5;
+		k_eInMatchmaking = 6;
+		k_eInMatch = 7;
+		k_eMissingPlayer = 8;
+		k_eUnownedCards = 9;
+		k_eInvalidVersion = 10;
+	}
+
+	optional .CMsgClientToGCPrivateLobbyStartMatchResponse.EResponse result = 1 [default = k_eInternalError];
+	optional uint32 account_id = 2;
+}
+
+message CMsgClientToGCPrivateLobbyInviteUser {
+	optional fixed64 private_lobby_id = 1;
+	optional uint32 invite_account_id = 2;
+}
+
+message CMsgClientToGCPrivateLobbyInviteUserResponse {
+	enum EResponse {
+		k_eInternalError = 0;
+		k_eSuccess = 1;
+		k_eAlreadyInvited = 2;
+		k_eInvalidPermissions = 3;
+		k_eInvalidLobbyID = 4;
+		k_eDisabled = 5;
+		k_eTooManyInvites = 6;
+		k_eUserOffline = 7;
+	}
+
+	optional .CMsgClientToGCPrivateLobbyInviteUserResponse.EResponse result = 1 [default = k_eInternalError];
+}
+
+message CMsgClientToGCPrivateLobbyChallenge {
+	optional uint32 challenge_account_id = 1;
+	optional uint32 client_version = 2;
+}
+
+message CMsgClientToGCPrivateLobbyChallengeResponse {
+	enum EResponse {
+		k_eSuccess = 0;
+		k_eTargetNotFriends = 1;
+		k_eTargetInMatch = 2;
+		k_eTargetOffline = 3;
+		k_eInternalError = 4;
+		k_eCannotMatchmake = 5;
+		k_eInvalidVersion = 6;
+	}
+
+	optional .CMsgClientToGCPrivateLobbyChallengeResponse.EResponse result = 1 [default = k_eSuccess];
+	optional fixed64 private_lobby_id = 2;
+}
+
+message CMsgGCToClientPrivateLobbyEvent {
+	enum EEvent {
+		k_ePlayerKicked = 1;
+		k_eDeckShared = 2;
+		k_eJoinedLobby = 3;
+		k_eMatchCompleted = 4;
+		k_eMatchMakingStopped_User = 5;
+		k_eMatchMakingStopped_Version = 6;
+	}
+
+	optional fixed64 private_lobby_id = 1;
+	optional .CMsgGCToClientPrivateLobbyEvent.EEvent event = 2 [default = k_ePlayerKicked];
+	optional uint32 initiator_account_id = 3;
+	optional uint32 target_account_id = 4;
+	optional bytes bytes_data = 5;
+	optional string str_data = 6;
+	optional uint64 uint_data = 7;
+}
+
+message CMsgClientToGCPrivateLobbyClientVersion {
+	optional fixed64 private_lobby_id = 1;
+	optional uint32 client_version = 2;
+}
+
+message CMsgGCToClientSDRTicket {
+	optional string ticket = 1;
+}
+
+message CMsgClientToGCReplacementSDRTicket {
+	optional fixed64 lobby_id = 1;
+}
+
+message CMsgClientToGCReplacementSDRTicketResponse {
+	optional string ticket = 1;
+	optional string error_message = 2;
+}
+

@@ -1,0 +1,372 @@
+import "steammessages.proto";
+
+option optimize_for = SPEED;
+option cc_generic_services = false;
+
+enum EGCDCGCommonMessages {
+	k_EMsgAnyToGCReportAsserts = 7000;
+	k_EMsgAnyToGCReportAssertsResponse = 7001;
+}
+
+enum EDCGMatchMode {
+	k_EDCGMatchMode_NewUser = 1;
+	k_EDCGMatchMode_Unranked = 2;
+	k_EDCGMatchMode_Gauntlet = 3;
+	k_EDCGMatchMode_League = 4;
+	k_EDCGMatchMode_Draft = 5;
+	k_EDCGMatchMode_PrivateLobby = 6;
+	k_EDCGMatchMode_Puzzle = 7;
+	k_EDCGMatchMode_AI = 8;
+	k_EDCGMatchMode_Tournament = 9;
+}
+
+enum EDCGLobbyTeam {
+	k_EDCGLobbyTeam_Team0 = 0;
+	k_EDCGLobbyTeam_Team1 = 1;
+	k_EDCGLobbyTeam_Spectator = 16;
+}
+
+enum EDCGLobbyTimer {
+	k_eDCGLobbyTimer_Unspecified = 0;
+	k_eDCGLobbyTimer_Disabled = 1;
+	k_eDCGLobbyTimer_Default = 2;
+	k_eDCGLobbyTimer_Tournament = 3;
+}
+
+enum EDCGPrivateLobbyMode {
+	k_eDCGPrivateLobbyMode_Standard = 0;
+	k_eDCGPrivateLobbyMode_Random1 = 1;
+	k_eDCGPrivateLobbyMode_Random2 = 2;
+	k_eDCGPrivateLobbyMode_Random3 = 3;
+	k_eDCGPrivateLobbyMode_Random4 = 4;
+	k_eDCGPrivateLobbyMode_Chaos = 5;
+}
+
+enum ELobbyServerState {
+	k_eLobbyServerState_Assign = 0;
+	k_eLobbyServerState_InGame = 1;
+	k_eLobbyServerState_PostMatch = 2;
+	k_eLobbyServerState_SignedOut = 3;
+	k_eLobbyServerState_Abandoned = 4;
+}
+
+enum EGCLobbyData {
+	k_ELobbyData_PostMatchSurvey = 1;
+}
+
+enum DCG_COMBATLOG_TYPES {
+	DCG_COMBATLOG_INVALID = -1;
+	DCG_COMBATLOG_DAMAGE = 0;
+	DCG_COMBATLOG_HEAL = 1;
+	DCG_COMBATLOG_DRAW = 2;
+	DCG_COMBATLOG_PASS = 3;
+	DCG_COMBATLOG_COMBAT = 4;
+	DCG_COMBATLOG_PLAY_CREEP = 5;
+	DCG_COMBATLOG_PLAY_IMPROVEMENT = 6;
+	DCG_COMBATLOG_PLAY_SPELL = 7;
+	DCG_COMBATLOG_PLAY_EQUIPMENT = 8;
+	DCG_COMBATLOG_PLAY_ABILITY = 9;
+	DCG_COMBATLOG_GAIN_GOLD = 10;
+	DCG_COMBATLOG_BUY_ITEM = 11;
+	DCG_COMBATLOG_DISCARD = 12;
+	DCG_COMBATLOG_ADD_MODIFIER = 13;
+	DCG_COMBATLOG_REMOVE_MODIFIER = 14;
+	DCG_COMBATLOG_KILL = 15;
+	DCG_COMBATLOG_CARD_MOVE = 16;
+	DCG_COMBATLOG_CREEP_SPAWN = 17;
+	DCG_COMBATLOG_DEATH = 18;
+	DCG_COMBATLOG_COMBAT_OVER = 19;
+	DCG_COMBATLOG_BEGGINING_OF_SPELLCASTING = 20;
+	DCG_COMBATLOG_BEGGINING_OF_SPELLCASTING_END = 21;
+	DCG_COMBATLOG_UNIT_ENTERING_COMBAT = 22;
+	DCG_COMBATLOG_UNIT_LEAVING_COMBAT = 23;
+	DCG_COMBATLOG_TRIGGER_TRIGGERED = 24;
+}
+
+message CExtraMsgBlock {
+	optional uint32 msg_type = 1;
+	optional bytes contents = 2;
+	optional uint64 msg_key = 3;
+	optional bool is_compressed = 4;
+}
+
+message CSODCGLobby {
+	message Member {
+		optional uint32 account_id = 1;
+		optional string persona_name = 2;
+		optional .EDCGLobbyTeam team = 3 [default = k_EDCGLobbyTeam_Team0];
+		optional bool has_left = 4;
+	}
+
+	repeated .CSODCGLobby.Member members = 1;
+	repeated .CExtraMsgBlock extra_messages = 2;
+	optional fixed64 server_steam_id = 3;
+	optional uint64 lobby_id = 5;
+	optional uint64 match_id = 6;
+	optional uint32 league_id = 7;
+	optional .ELobbyServerState server_state = 8 [default = k_eLobbyServerState_Assign];
+	optional fixed32 replay_salt = 9;
+	optional .EDCGMatchMode match_mode = 10 [default = k_EDCGMatchMode_NewUser];
+	optional uint32 udp_connect_ip = 11;
+	optional uint32 udp_connect_port = 12;
+	optional uint32 tournament_id = 13;
+	optional uint32 tournament_series_id = 14;
+}
+
+message CLobbyData_PostMatchSurvey {
+	message PlayerSurvey {
+		optional uint32 account_id = 1;
+		optional uint32 question_id = 2;
+	}
+
+	repeated .CLobbyData_PostMatchSurvey.PlayerSurvey surveys = 1;
+}
+
+message CSOGameAccountClient {
+	enum EFlags {
+		k_eDeveloper = 1;
+	}
+
+	optional uint32 account_id = 1 [(key_field) = true];
+	optional uint32 phantom_league = 2;
+	optional uint32 flags = 3;
+}
+
+message CSOGauntlet {
+	message Match {
+		optional .CSOGauntlet.EMatchStatus status = 1 [default = k_eStatusUnplayed];
+		optional uint64 match_id = 2;
+	}
+
+	enum EMatchStatus {
+		k_eStatusUnplayed = 0;
+		k_eStatusLoss = 1;
+		k_eStatusWin = 2;
+		k_eStatusTie = 3;
+		k_eStatusDisqualified = 4;
+		k_eStatusError = 5;
+	}
+
+	optional uint32 account_id = 1 [(key_field) = true];
+	optional uint32 gauntlet_id = 2 [(key_field) = true];
+	optional uint64 active_lobby_id = 3;
+	optional uint32 abandoned_time = 4;
+	optional bytes deck_code = 5;
+	optional uint32 ranking_score = 6;
+	repeated .CSOGauntlet.Match match_list = 7;
+	optional uint32 grant_stage = 8;
+}
+
+message CSOPhantomItem {
+	optional uint32 account_id = 1;
+	optional uint32 phantom_league = 2;
+	optional uint32 def_index = 3;
+	optional uint64 phantom_id = 4;
+}
+
+message CSOCardAchievement {
+	optional uint32 account_id = 1;
+	optional uint32 achievement_id = 2;
+	optional uint32 progress = 3;
+}
+
+message CSOLeagueMembership {
+	optional uint32 league_id = 1 [(key_field) = true];
+	optional uint32 account_id = 2 [(key_field) = true];
+	optional uint32 flags = 3;
+	optional uint32 packs_granted = 4;
+}
+
+message CMsgStartFindingMatchInfo {
+	optional uint32 league_id = 1;
+	optional string server_search_key = 2;
+	optional uint32 client_version = 3;
+	optional .EDCGMatchMode match_mode = 4 [default = k_EDCGMatchMode_NewUser];
+	optional bytes deck_data = 5;
+}
+
+message CSODCGPlayerCurrency {
+	optional uint32 account_id = 1 [(key_field) = true];
+	optional uint32 currency_id = 2 [(key_field) = true];
+	optional uint32 balance = 3;
+	optional uint32 flags = 4;
+	optional uint32 trade_restriction = 5;
+}
+
+message CSODCGPlayerRating {
+	optional uint32 account_id = 1 [(key_field) = true];
+	optional uint32 rating_id = 2 [(key_field) = true];
+	optional uint32 rating = 3;
+	optional uint32 matches_played = 4;
+	optional uint32 matches_won = 5;
+	optional bool is_hero_rank = 6;
+	optional uint32 current_streak = 7;
+	optional uint32 best_streak = 8;
+	optional uint32 peak_rating = 9;
+	optional uint32 season = 10;
+}
+
+message CMsgDCGCombatLogEntry {
+	optional .DCG_COMBATLOG_TYPES type = 1 [default = DCG_COMBATLOG_INVALID];
+	optional uint32 target_card_id = 2;
+	optional uint32 target_object_id = 3;
+	optional uint32 target_owner = 4;
+	optional uint32 source_card_id = 5;
+	optional uint32 source_object_id = 6;
+	optional uint32 source_owner = 7;
+	optional uint32 value = 8;
+	optional int32 target_attack = 9;
+	optional int32 target_armor = 10;
+	optional int32 target_health = 11;
+	optional int32 source_attack = 12;
+	optional int32 source_armor = 13;
+	optional int32 source_health = 14;
+	optional uint32 turnstamp = 15;
+	optional uint32 source_lane = 16;
+	optional uint32 target_lane = 17;
+	optional uint32 source_parent_card_id = 18;
+	optional uint32 source_parent_object_id = 19;
+	optional uint32 modifier_type = 20;
+	optional bool piercing = 21;
+	optional string effect_name = 22;
+	optional uint32 target_combat_position = 23;
+}
+
+message CMsgDeckValdiationConfig {
+	message CardLimit {
+		optional uint32 card_id = 1;
+		optional uint32 card_count = 2;
+	}
+
+	enum ERarity {
+		eRarity_Common = 1;
+		eRarity_Uncommon = 2;
+		eRarity_Rare = 3;
+	}
+
+	optional uint32 version = 1;
+	optional bool must_own_cards = 2;
+	optional bool allow_all_sets = 3;
+	repeated uint32 set_ids = 4;
+	optional uint32 main_min = 5;
+	optional uint32 main_max = 6;
+	optional uint32 items_min = 7;
+	optional uint32 items_max = 8;
+	optional uint32 main_max_instances = 9;
+	optional uint32 items_max_instances = 10;
+	optional uint32 hero_max_instances = 11;
+	repeated .CMsgDeckValdiationConfig.CardLimit card_limits = 12;
+	repeated .CMsgDeckValdiationConfig.CardLimit required_cards = 13;
+	optional bool include_active_sets = 14;
+	repeated .CMsgDeckValdiationConfig.ERarity blocked_rarities = 15;
+}
+
+message CMsgAnyToGCReportAsserts {
+	message TrackedAssert {
+		optional string filename = 1;
+		optional uint32 line_number = 2;
+		optional string sample_msg = 3;
+		optional string sample_stack = 4;
+		optional uint32 times_fired = 5;
+		optional string function_name = 6;
+		optional string condition = 7;
+	}
+
+	optional uint32 version = 1;
+	repeated .CMsgAnyToGCReportAsserts.TrackedAssert asserts = 2;
+}
+
+message CMsgAnyToGCReportAssertsResponse {
+	optional bool success = 1;
+}
+
+message CMsgGauntletConfig {
+	message RewardTier {
+		message Grant {
+			optional uint32 grant_id = 1;
+			optional uint32 quantity = 2;
+		}
+
+		repeated .CMsgGauntletConfig.RewardTier.Grant trophy_grant = 1;
+		repeated .CMsgGauntletConfig.RewardTier.Grant item_grant = 2;
+		optional uint32 min_wins = 3;
+	}
+
+	message GrantStage {
+		optional .CMsgGauntletConfig.EGrantType grant_type = 1 [default = kGrant_Unknown];
+		optional uint32 grant_count = 2;
+		optional uint32 repeat_count = 3;
+		optional string display_msg = 4;
+	}
+
+	enum EGrantType {
+		kGrant_Unknown = 0;
+		kGrant_Hero = 1;
+		kGrant_Card = 2;
+		kGrant_Item = 3;
+		kGrant_Pack = 4;
+	}
+
+	optional uint32 gauntlet_id = 1;
+	optional uint32 random_colors = 2;
+	optional uint32 max_wins = 3;
+	optional uint32 max_losses = 4;
+	optional uint32 max_games = 5;
+	optional uint32 attempts_trophy_id = 6;
+	repeated .CMsgGauntletConfig.RewardTier rewards = 7;
+	optional .CMsgDeckValdiationConfig validator = 8;
+	optional uint32 phantom_league_id = 9;
+	optional bool register_deck = 10;
+	optional uint32 grant_stages = 11;
+	optional bool auto_populate_deck = 12;
+	repeated .CMsgGauntletConfig.GrantStage grant_stage_info = 13;
+	optional bool can_modify_deck = 14;
+	optional bool is_active = 15;
+	optional uint32 starting_currency = 16;
+}
+
+message CSODCGPrivateLobby {
+	message Member {
+		optional uint32 account_id = 1;
+		optional string persona_name = 2;
+		optional .EDCGLobbyTeam team = 3 [default = k_EDCGLobbyTeam_Team0];
+		optional bytes deck_bytes = 5;
+		optional bool has_deck = 7;
+		optional uint32 client_version = 8;
+	}
+
+	message Invite {
+		optional uint32 account_id = 1;
+		optional string persona_name = 2;
+		optional uint32 invited_by = 3;
+	}
+
+	message SharedDeck {
+		optional uint32 shared_by_account_id = 1;
+		optional bytes deck_bytes = 2;
+		optional string deck_name = 3;
+	}
+
+	message Match {
+		optional uint64 match_id = 1;
+		optional uint32 winning_account_id = 2;
+	}
+
+	optional uint64 private_lobby_id = 1;
+	repeated .CSODCGPrivateLobby.Member members = 2;
+	repeated .CSODCGPrivateLobby.Invite invites = 3;
+	repeated .CExtraMsgBlock extra_messages = 4;
+	optional bool in_match_making = 5;
+	optional string server_search_key = 6;
+	optional bool are_decks_visible = 7;
+	repeated .CSODCGPrivateLobby.Match match_list = 8;
+	optional .EDCGLobbyTimer timer_mode = 9 [default = k_eDCGLobbyTimer_Unspecified];
+	optional fixed64 match_lobby_id = 10;
+	repeated .CSODCGPrivateLobby.SharedDeck shared_decks = 11;
+	optional .CMsgDeckValdiationConfig deck_validator = 12;
+	optional uint32 random_colors = 13;
+	optional .EDCGPrivateLobbyMode game_mode = 14 [default = k_eDCGPrivateLobbyMode_Standard];
+	optional uint32 min_client_version = 15;
+	optional uint32 max_client_version = 16;
+}
+
