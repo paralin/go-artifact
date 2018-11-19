@@ -8,8 +8,6 @@ enum EGCDCGServerMessages {
 	k_EMsgServerToGCMatchSignoutPermissionResponse = 10013;
 	k_EMsgServerToGCMatchSignout = 10014;
 	k_EMsgServerToGCMatchSignoutResponse = 10015;
-	k_EMsgServerToGCValidateCardOwnership = 10016;
-	k_EMsgServerToGCValidateCardOwnershipResponse = 10017;
 	k_EMsgServerToGCIdlePing = 10018;
 	k_EMsgGCToServerRequestPing = 10019;
 	k_EMsgGCToServerAllocateForMatch = 10021;
@@ -24,35 +22,33 @@ enum EGCDCGServerMessages {
 	k_EMsgGCToServerRunTests = 10031;
 	k_EMsgGCToServerRunTestsResponse = 10032;
 	k_EMsgServerToGCTestResults = 10033;
-	k_EMsgGCToServerAddSpectator = 10034;
-	k_EMsgGCToServerAddSpectatorResponse = 10035;
+	k_EMsgGCToServerAddTourneySpectator = 10034;
+	k_EMsgGCToServerAddTourneySpectatorResponse = 10035;
 }
 
 enum EGCServerLobbyData {
+	k_EServerLobbyData_DeckValidator = 1;
 	k_EServerLobbyData_DraftCards = 3;
 	k_EServerLobbyData_PlayerDeck = 4;
-	k_EServerLobbyData_PlayerRating = 5;
+	k_EServerLobbyData_PlayerMMR = 5;
 	k_EServerLobbyData_CardAchievements = 6;
 	k_EServerLobbyData_GauntletInfo = 7;
-	k_EServerLobbyData_PrivateLobbyInfo = 8;
 }
 
 enum EGCServerSignoutData {
-	k_EServerSignoutData_ServerCommandReplay = 1;
 	k_EServerSignoutData_PlayerDecks = 2;
-	k_EServerSignoutData_TurnStats = 3;
 	k_EServerSignoutData_LobbyInfo = 4;
-	k_EServerSignoutData_ClientReplay = 5;
-	k_EServerSignoutData_DraftResults = 8;
 	k_EServerSignoutData_GameOptions = 9;
 	k_EServerSignoutData_CardAchievements = 11;
+	k_EServerSignoutData_PerformanceStats = 12;
+	k_EServerSignoutData_Disconnections = 13;
 }
 
 message CMsgServerCrashSentinelFile {
 	message DCGGameInfo {
 		optional uint64 match_id = 1;
 		optional fixed64 lobby_id = 2;
-		optional uint32 league_id = 3;
+		optional uint32 gauntlet_id = 3;
 		optional uint32 server_state = 4;
 		repeated uint32 client_account_ids = 5;
 	}
@@ -98,22 +94,22 @@ message CServerLobbyData_PlayerDeck {
 	optional bytes deck_data = 1;
 }
 
-message CServerLobbyData_PlayerRating {
+message CServerLobbyData_PlayerMMR {
 	message Player {
 		optional uint32 account_id = 1;
-		optional uint32 rating = 2;
+		optional uint32 mmr = 2;
+		optional uint32 uncertainty = 3;
 	}
 
-	repeated .CServerLobbyData_PlayerRating.Player players = 1;
+	repeated .CServerLobbyData_PlayerMMR.Player players = 1;
 }
 
 message CServerLobbyData_GauntletInfo {
 	optional .CMsgGauntletConfig gauntlet_config = 1;
 }
 
-message CServerLobbyData_PrivateLobbyInfo {
-	optional .CMsgDeckValdiationConfig deck_validator = 1;
-	optional uint32 random_colors = 2;
+message CServerLobbyData_DeckValidator {
+	optional .CMsgDeckValidator deck_validator = 1;
 }
 
 message CSODCGServerLobby {
@@ -125,23 +121,13 @@ message CSODCGServerLobby {
 	optional .EDCGLobbyTimer timer_mode = 6 [default = k_eDCGLobbyTimer_Unspecified];
 }
 
-message CMsgServerSignoutData_ServerCommandReplay {
-	optional bytes replay_data = 1;
-	optional uint32 version = 2;
-}
-
-message CMsgServerSignoutData_ClientReplay {
-	optional bytes replay_data = 1;
-	optional uint32 version = 2;
-}
-
 message CMsgServerSignoutData_LobbyInfo {
 	optional uint64 match_id = 1;
 	optional uint32 start_time = 2;
-	optional uint32 league_id = 3;
+	optional uint32 gauntlet_id = 3;
 	optional uint32 server_version = 4;
 	optional uint32 replay_salt = 5;
-	optional .EDCGMatchMode match_mode = 6 [default = k_EDCGMatchMode_NewUser];
+	optional .EDCGMatchMode match_mode = 6 [default = k_EDCGMatchMode_Unranked];
 }
 
 message CMsgServerSignoutData_PlayerDecks {
@@ -149,11 +135,6 @@ message CMsgServerSignoutData_PlayerDecks {
 		message Hero {
 			optional uint32 card_id = 1;
 			optional uint32 hero_slot = 2;
-			optional uint32 equipment_cost = 3;
-			optional uint32 weapon_equip = 4;
-			optional uint32 armor_equip = 5;
-			optional uint32 misc_equip = 6;
-			optional uint32 turns_in_fountain = 7;
 		}
 
 		message Card {
@@ -161,21 +142,11 @@ message CMsgServerSignoutData_PlayerDecks {
 			optional uint32 num_in_deck = 2;
 			optional uint32 num_in_hand = 3;
 			optional uint32 num_played = 4;
-			optional uint32 num_lanes_unavailable = 5;
-			optional uint32 num_lanes_available = 6;
-			optional uint32 damage_dealt = 7;
-			optional uint32 tower_damage_dealt = 8;
-			optional uint32 damage_receieved = 9;
-			optional uint32 healing_given = 10;
-			optional uint32 healing_received = 11;
-			optional uint32 num_deaths = 12;
 		}
 
 		optional uint32 player_id = 1;
 		repeated .CMsgServerSignoutData_PlayerDecks.Player.Card cards = 2;
 		repeated .CMsgServerSignoutData_PlayerDecks.Player.Hero heroes = 3;
-		optional string deck_code = 4;
-		optional fixed64 deck_checksum = 5;
 		optional uint32 critical_life = 6;
 		optional uint32 total_gold = 7;
 	}
@@ -184,64 +155,10 @@ message CMsgServerSignoutData_PlayerDecks {
 	optional uint32 stats_version = 2;
 }
 
-message CMsgServerSignoutData_TurnStats {
-	message Turn {
-		message PlayerShop {
-			message StoreItem {
-				optional uint32 card_id = 1;
-				optional uint32 store_slot = 2;
-				optional uint32 sequence = 3;
-				optional uint32 action = 4;
-			}
-
-			optional uint32 player_id = 1;
-			optional uint32 start_gold = 2;
-			repeated .CMsgServerSignoutData_TurnStats.Turn.PlayerShop.StoreItem items = 3;
-		}
-
-		message Lane {
-			message Player {
-				optional uint32 player_id = 1;
-				optional uint32 tower_health = 2;
-				optional uint32 ancient_health = 3;
-				optional uint32 starting_hand_size = 4;
-				optional uint32 times_passed = 5;
-				optional uint32 quick_cards = 6;
-				optional uint32 playable_cards = 7;
-				optional uint32 time_active_ms = 8;
-				optional uint32 peak_lane_cards = 9;
-				optional uint32 starting_gold = 10;
-				optional uint32 total_gold = 11;
-				optional uint32 peak_improvements = 12;
-				optional uint32 damage_dealt = 13;
-				optional uint32 cards_died = 14;
-				optional uint32 mana_used = 15;
-				optional uint32 game_clock = 16;
-			}
-
-			optional uint32 lane = 1;
-			optional uint32 rounds = 2;
-			repeated .CMsgServerSignoutData_TurnStats.Turn.Lane.Player players = 3;
-			optional uint32 starting_player = 4;
-			optional uint32 ending_player = 5;
-		}
-
-		optional uint32 turn = 1;
-		optional uint32 duration_s = 2;
-		optional uint32 shopping_s = 3;
-		optional uint32 hero_placement_s = 4;
-		repeated .CMsgServerSignoutData_TurnStats.Turn.Lane lanes = 5;
-		repeated .CMsgServerSignoutData_TurnStats.Turn.PlayerShop shops = 6;
-	}
-
-	repeated .CMsgServerSignoutData_TurnStats.Turn turns = 1;
-	optional uint32 stats_version = 2;
-}
-
 message CMsgServerToGCMatchSignoutPermission {
 	optional uint32 signout_start = 1;
-	optional uint32 league_id = 2;
 	optional uint64 match_id = 3;
+	optional .EDCGMatchMode match_mode = 4 [default = k_EDCGMatchMode_Unranked];
 }
 
 message CMsgServerToGCMatchSignoutPermissionResponse {
@@ -251,34 +168,31 @@ message CMsgServerToGCMatchSignoutPermissionResponse {
 }
 
 message CMsgServerSignoutData_CardAchievements {
+	enum EAchievementGrantType {
+		k_EAchievementGrant_Add = 0;
+		k_EAchievementGrant_Max = 1;
+		k_EAchievementGrant_Set = 2;
+	}
+
 	optional uint32 account_id = 1;
 	repeated uint32 achievement_ids = 2 [packed = true];
 	repeated uint32 grant_amounts = 3 [packed = true];
+	repeated .CMsgServerSignoutData_CardAchievements.EAchievementGrantType grant_types = 4 [packed = true];
 }
 
-message CMsgServerSignoutData_DraftResults {
-	message Card {
-		optional uint32 pack_number = 1;
-		optional uint32 card_number = 2;
-		optional .CServerDraftCard card = 3;
-	}
-
-	message Player {
-		optional uint32 account_id = 1;
-		repeated .CMsgServerSignoutData_DraftResults.Card draft_cards = 2;
-		optional bool cannot_trade = 3;
-		optional uint32 trade_restriction_time = 4;
-		repeated uint64 pack_item_ids = 5;
-		optional uint32 player_position = 6;
-	}
-
-	enum EResult {
-		k_EResult_Success = 1;
-		k_EResult_FailAndRollback = 2;
-	}
-
-	optional .CMsgServerSignoutData_DraftResults.EResult result = 1 [default = k_EResult_Success];
-	repeated .CMsgServerSignoutData_DraftResults.Player players = 2;
+message CMsgServerSignoutData_PerformanceStats {
+	optional uint32 start_memory_bytes = 1;
+	optional uint32 peak_memory_bytes = 2;
+	optional uint32 end_memory_bytes = 3;
+	optional uint32 total_update_time_ms = 4;
+	optional uint32 total_match_time_ms = 5;
+	optional uint32 sent_messages = 6;
+	optional uint32 received_messages = 7;
+	optional uint32 sent_bytes = 8;
+	optional uint32 received_bytes = 9;
+	optional uint32 max_update_time_micros = 10;
+	optional uint32 num_updates = 11;
+	optional uint32 replay_size_bytes = 12;
 }
 
 message CMsgServerSignoutData_GameOptions {
@@ -290,37 +204,24 @@ message CMsgServerSignoutData_GameOptions {
 	repeated .CMsgServerSignoutData_GameOptions.GameOption game_options = 1;
 }
 
+message CMsgMatchDisconnection {
+	optional uint32 account_id = 1;
+	optional uint32 disconnect_time = 2;
+	optional uint32 connection_state = 3;
+	optional uint32 reason_code = 4;
+	optional uint32 reconnect_delay = 5;
+}
+
+message CMsgServerSignoutData_Disconnections {
+	repeated .CMsgMatchDisconnection disconnections = 1;
+}
+
 message CMsgServerToGCMatchSignout {
-	message PlayerInfo {
-		optional uint32 account_id = 1;
-		optional .EDCGLobbyTeam team = 2 [default = k_EDCGLobbyTeam_Team0];
-		optional uint32 player_slot = 3;
-		repeated uint32 hero_lineup = 4;
-		repeated uint32 tower_health = 5;
-		optional uint32 ancient_health = 6;
-		optional uint32 rating = 7;
-		optional bool conceded = 8;
-		optional uint32 game_clock = 9;
-		repeated uint32 hero_ids = 10;
-	}
-
-	enum EEndReason {
-		k_EEndReason_TeamWin = 0;
-		k_EEndReason_Tie = 1;
-		k_EEndReason_AllAbandoned = 2;
-		k_EEndReason_NetworkIssues = 3;
-		k_EEndReason_MatchLength = 4;
-	}
-
 	repeated .CExtraMsgBlock additional_data = 1;
 	optional uint32 signout_attempt = 2;
 	optional uint64 lobby_id = 3;
-	optional uint32 match_duration_s = 4;
-	optional uint32 game_turns = 5;
-	optional .CMsgServerToGCMatchSignout.EEndReason end_reason = 6 [default = k_EEndReason_TeamWin];
-	optional .EDCGLobbyTeam winning_team = 7 [default = k_EDCGLobbyTeam_Team0];
-	repeated .CMsgServerToGCMatchSignout.PlayerInfo players = 8;
 	optional uint32 cluster_id = 9;
+	optional .CMsgMatchData match_data = 10;
 }
 
 message CMsgServerToGCMatchSignoutResponse {
@@ -336,17 +237,6 @@ message CMsgServerToGCMatchSignoutResponse {
 }
 
 message CMsgServerWelcomeDCG {
-}
-
-message CMsgServerToGCValidateCardOwnership {
-	optional uint32 account_id = 1;
-	optional uint32 league_id = 2;
-	repeated uint64 card_item_ids = 3;
-}
-
-message CMsgServerToGCValidateCardOwnershipResponse {
-	optional bool success = 1;
-	optional bool valid_cards = 2;
 }
 
 message CMsgServerToGCIdlePing {
@@ -372,7 +262,7 @@ message CMsgServerToGCEnterMatchmaking {
 	optional uint32 server_public_ip = 5;
 	optional uint32 server_private_ip = 6;
 	optional uint32 server_port = 7;
-	optional uint32 sdr_port = 8;
+	optional bytes sdr_address = 9;
 }
 
 message CMsgGCToServerCancelAllocateForMatch {
@@ -401,7 +291,7 @@ message CMsgServerToGCAbandonMatch {
 	optional .CMsgServerToGCAbandonMatch.EReason reason_code = 4 [default = eReason_ServerCrash];
 	optional uint64 additional_data = 5;
 	optional uint64 match_id = 6;
-	optional uint32 league_id = 7;
+	optional uint32 gauntlet_id = 7;
 	repeated .CMsgServerToGCAbandonMatch.Player players = 8;
 	optional fixed32 public_ip_address = 9;
 	optional uint32 port = 10;
@@ -419,15 +309,16 @@ message CMsgServerToGCTestConnectionResponse {
 	optional uint64 lobby_id = 2;
 }
 
-message CMsgGCToServerAddSpectator {
+message CMsgGCToServerAddTourneySpectator {
 	optional uint64 lobby_id = 1;
 	optional uint32 account_id = 2;
 	optional uint32 account_to_spectate_id = 3;
+	optional uint64 tourney_id = 4;
 }
 
-message CMsgGCToServerAddSpectatorResponse {
+message CMsgGCToServerAddTourneySpectatorResponse {
 	optional bool success = 1;
-	optional uint32 account_to_spectate_id = 2;
+	optional uint64 tourney_id = 2;
 }
 
 message CMsgGCToServerRunTests {

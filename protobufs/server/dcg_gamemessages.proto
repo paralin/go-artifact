@@ -18,8 +18,6 @@ enum EDCGGameMessages {
 	k_EMsgGameServerToClientInitialGameState = 12;
 	k_EMsgGameServerToClientGameCompleted = 13;
 	k_EMsgTutorialEvent = 1000;
-	k_EMsgVenchatoquistEvent = 1001;
-	k_EMsgCardRevealPlayerAction = 1002;
 }
 
 enum EScriptBlockType {
@@ -57,6 +55,7 @@ enum EScriptBlockType {
 	HACKED_EFFECT = 32;
 	EXPORT_CARD_SET_TO_IMAGES = 33;
 	GAME_OVER = 34;
+	TOKEN_DEPLOYED = 35;
 }
 
 enum EShoppingSlot {
@@ -69,6 +68,7 @@ enum EShoppingSlot {
 enum EDCGDisconnectReason {
 	k_EDCGDisconnectReason_UserLeaveMatch = 1001;
 	k_EDCGDisconnectReason_UserQuitApp = 1002;
+	k_EDCGDisconnectReason_UserCancel = 1003;
 	k_EDCGDisconnectReason_BadMessage = 2001;
 	k_EDCGDisconnectReason_GameDestroyedUnexpectedly = 2002;
 	k_EDCGDisconnectReason_ChangingServer = 2003;
@@ -105,7 +105,7 @@ message CMsgGamePlayerRequestHandoff {
 message CMsgGameHandoff {
 	optional uint32 player_count = 1;
 	optional bool is_spectator = 3;
-	optional .EDCGMatchMode game_mode = 4 [default = k_EDCGMatchMode_NewUser];
+	optional .EDCGMatchMode game_mode = 4 [default = k_EDCGMatchMode_Unranked];
 }
 
 message CMsgGameServerToClientInitialGameState {
@@ -160,29 +160,6 @@ message CMsgTutorialEvent {
 	optional string param3 = 5;
 }
 
-message CMsgVenchatoquistEvent {
-	enum EChatSource {
-		eObjectID = 1;
-		ePlayer = 2;
-		eDeckImp = 3;
-	}
-
-	optional string text = 1;
-	optional uint32 object_id = 2;
-	optional .CMsgVenchatoquistEvent.EChatSource chat_source = 3 [default = eObjectID];
-	optional string persona_name = 4;
-	optional uint32 user_id = 5;
-	optional uint32 line_id = 6;
-}
-
-message CMsgCardRevealPlayerAction {
-	optional uint32 object_id = 1;
-	optional uint32 owner_id = 2;
-	optional uint32 template_card_id = 3;
-	optional bytes card_instance_attributes = 4;
-	optional bytes card_calculated_effects = 5;
-}
-
 message CMsgGameClientToServerChatMsg {
 	optional .CExtraMsgBlock gc_chat_msg = 1;
 }
@@ -202,6 +179,9 @@ message CMsgGameServerToClientConnectionStatus {
 	message Player {
 		optional uint32 player_id = 1;
 		optional .CMsgGameServerToClientConnectionStatus.EStatus status = 2 [default = k_EConnected];
+		optional bool inactivity_ticking = 3;
+		optional uint32 inactivity_ms_remaining = 4;
+		optional uint32 inactivity_anim_ms_remaining = 5;
 	}
 
 	enum EStatus {
@@ -269,6 +249,13 @@ message CTraceMsg_PathingCardChanged {
 }
 
 message CTraceMsg_CardBought {
+	optional int32 turn_card_entered_hand = 1;
+	optional int32 order_card_entered_hand = 2;
+}
+
+message CTraceMsg_ChargesChanged {
+	optional int32 charge_delta = 1;
+	optional uint32 new_charges = 2;
 }
 
 message CTraceMsg_ShoppingCardAppeared {
@@ -297,7 +284,6 @@ message CTraceMsg_ShoppingCardShuffled {
 message CTraceMsg_UnitEnteringCombat {
 	optional uint32 new_lane_id = 1;
 	optional uint32 new_combat_position = 2;
-	optional .CMsg_Card card = 3;
 	optional uint32 owner_id = 4;
 	optional bool is_valid_path_target = 5;
 	optional bool is_boundary_path = 6;
@@ -327,7 +313,7 @@ message CTraceMsg_CardSurvivedDeath {
 message CTraceMsg_TowerKilled {
 	optional uint32 owner_id = 1;
 	optional bool is_combat = 2;
-	optional bool is_game_end = 3;
+	optional bool is_defeat_for_owner = 3;
 }
 
 message CTraceMsg_CardKilled {
@@ -335,8 +321,6 @@ message CTraceMsg_CardKilled {
 	optional bool is_creep = 2;
 	optional bool is_hero = 3;
 	optional bool is_combat = 4;
-	optional bytes triggered_cards = 5;
-	optional bytes death_contributors = 6;
 }
 
 message CTraceMsg_ImprovementDestroyed {
@@ -373,14 +357,23 @@ message CTraceMsg_CardMovedToGraveyard {
 
 message CTraceMsg_CardDuplicated {
 	optional uint32 source_object_id = 1;
+	optional uint32 copied_card_object_id = 2;
 	optional uint32 source_effect_card_id = 3;
 	optional uint32 lane_id = 4;
+	optional uint32 zone_id = 5;
 }
 
 message CTraceMsg_CardDrawn {
+	enum ECardDrawnSource {
+		k_eCardDrawnSource_Deck = 1;
+		k_eCardDrawnSource_ItemDeck = 2;
+		k_eCardDrawnSource_Nowhere = 3;
+	}
+
 	optional uint32 owner_id = 1;
 	optional int32 turn_card_entered_hand = 2;
 	optional int32 order_card_entered_hand = 3;
+	optional .CTraceMsg_CardDrawn.ECardDrawnSource drawn_source = 4 [default = k_eCardDrawnSource_Deck];
 }
 
 message CTraceMsg_CardPlayed {
@@ -394,11 +387,17 @@ message CTraceMsg_TriggerTriggered {
 	optional uint32 source_object_id = 1;
 	optional uint32 source_effect_card_id = 2;
 	optional int32 event_name = 3;
+	optional uint32 related_object_id = 4;
+}
+
+message CTraceMsg_EffectProcced {
+	optional uint32 source_object_id = 1;
 }
 
 message CTraceMsg_UnitTargeted {
 	optional uint32 source_object_id = 1;
 	optional uint32 target_group = 2;
+	optional uint32 target_group_number = 3;
 }
 
 message CTraceMsg_PlayerPassed {
@@ -503,7 +502,7 @@ message CTraceMsg_TargetSelected {
 }
 
 message CTraceMsg_CardDiscarded {
-	optional uint32 source_card_id = 1;
+	optional uint32 source_card_object_id = 1;
 	optional uint32 template_card_id = 2;
 	optional bytes card_instance_attributes = 3;
 	optional bytes card_calculated_effects = 4;
@@ -515,6 +514,9 @@ message CTraceMsg_CardCreated {
 	optional bytes card_instance_attributes = 3;
 	optional bytes card_calculated_effects = 4;
 	optional bool is_item = 5;
+	optional bool was_spawned_as_dire = 6;
+	optional uint32 spawn_duplicate_index = 7;
+	optional bool is_duplicate = 8;
 }
 
 message CTraceMsg_CardRevealed {
@@ -536,23 +538,19 @@ message CTraceMsg_InnerBlock {
 	optional uint32 object_id = 4;
 }
 
-message CTraceMsg_UpdateDamagePreview {
-	optional int32 damage_preview = 1;
-	optional int32 healing_preview = 2;
+message CTraceMsg_PreviewDeathResultChanged {
+	optional uint32 old_preview_death_result = 1;
+	optional uint32 new_preview_death_result = 2;
+	optional uint32 owner_id = 3;
+	optional bool is_creep = 4;
+	optional bool is_hero = 5;
+	optional bool is_tower = 6;
 }
 
-message CTraceMsg_DeathSkullAdded {
-	optional uint32 owner_id = 1;
-	optional bool is_creep = 2;
-	optional bool is_hero = 3;
-	optional bool is_tower = 4;
-}
-
-message CTraceMsg_DeathSkullRemoved {
-	optional uint32 owner_id = 1;
-	optional bool is_creep = 2;
-	optional bool is_hero = 3;
-	optional bool is_tower = 4;
+message CTraceMsg_PreviewDamageChanged {
+	optional uint32 old_preview_damage = 1;
+	optional uint32 new_preview_damage = 2;
+	optional uint32 owner_id = 3;
 }
 
 message CTraceMsg_ColorsPlayableChanged {
